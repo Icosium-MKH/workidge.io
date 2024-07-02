@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class = "main_content_center">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Initially hide both forms
+            $('#developer-form').hide();
+            $('#recruiter-form').hide();
+
+            // Show developer form when Developer is selected
+            $('#role-developer').click(function(){
+                $('#developer-form').show();
+                $('#recruiter-form').hide();
+            });
+
+            // Show recruiter form when Recruiter is selected
+            $('#role-recruiter').click(function(){
+                $('#developer-form').hide();
+                $('#recruiter-form').show();
+            });
+        });
+    </script>
+
+
+    <h2>User Registration</h2>
+    <form id="role-selection">
+        <input type="radio" id="role-developer" name="role" value="developer">
+        <label for="role-developer">Developer</label><br>
+        <input type="radio" id="role-recruiter" name="role" value="recruiter">
+        <label for="role-recruiter">Recruiter</label><br><br>
+    </form>
+
+    <!-- Developer Registration Form -->
+    <form id="developer-form" method="post" action="{% url 'developer_registration' %}">
+        {% csrf_token %}
+        {{ developer_form.as_p }}
+        <button type="submit">Register as Developer</button>
+    </form>
+
+    <!-- Recruiter Registration Form -->
+    <form id="recruiter-form" method="post" action="{% url 'recruiter_registration' %}">
+        {% csrf_token %}
+        {{ recruiter_form.as_p }}
+        <button type="submit">Register as Recruiter</button>
+    </form>
+</div>
+{% endblock %}

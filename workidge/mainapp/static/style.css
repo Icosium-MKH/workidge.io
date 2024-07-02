@@ -1,0 +1,115 @@
+body {
+    background-image: url(corporate_background.jpg);
+    background-size : cover;
+    background-repeat: no-repeat; /* Do not repeat the background image */
+    background-attachment: fixed; 
+    position: relative;
+    color: white;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-left: 3%;
+}
+
+body::before {
+    content: ""; /* Required for pseudo-elements */
+    position: fixed; /* Set position to absolute */
+    top: 0; /* Position at the top of the body */
+    left: 0; /* Position at the left of the body */
+    width: 100%; /* Cover the entire width of the body */
+    height: 100%; /* Cover the entire height of the body */
+    background-color: rgba(0, 0, 0, 0.87); /* Add a semi-transparent black overlay */
+    z-index: -1; /* Move the pseudo-element behind other content */
+}
+
+
+
+header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: fit-content;
+    background-color: #171749; /* Adjust as needed */
+    text-align: center;
+    padding: 0.5%;
+    margin: 0;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 100%;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    z-index: 1000;
+}
+
+
+header .put_left {
+    flex: 1;
+    text-align: left;
+}
+
+header .put_center {
+    text-align: center;
+}
+
+header .put_right {
+    flex: 1;
+    text-align: right;
+}
+
+header .put_right a {
+    margin-left: 15px; /* Add some space between the links */
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #171749; /* Adjust as needed */
+    text-align: center;
+    padding: 0.5%;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 100%;
+}
+
+.put_left {
+    text-align: left;
+}
+
+.put_right {
+    text-align: right;
+}
+
+
+.main_content_center {
+    min-height: 75vh;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    /*background-color: rgba(172, 18, 18, 0.5);*/
+    position: relative;
+    text-align: center;
+}
+
+
+.table-striped tbody tr {
+    background-color: transparent !important; /* Ensure no background color is applied */
+}
+
+/* Set table header and content colors to white */
+.table thead th,
+.table tbody td {
+    color: white !important;
+}
+
+/* Additional styles to ensure table looks clean */
+.table {
+    border-color: white;
+}
+
+.table th,
+.table td {
+    border-color: white !important;
+}

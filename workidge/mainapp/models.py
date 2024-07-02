@@ -1,13 +1,29 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
-
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 # Create your models here.
-class Person(models.Model):
-#set ID and Email as primary keys
 
-    email = models.EmailField()
-    name = models.CharField(max_length=20)    
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+class Person(AbstractBaseUser):
+#set ID and Email as primary keys
+    
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)
 
     phone_regex = RegexValidator(
@@ -15,19 +31,36 @@ class Person(models.Model):
         message="Phone number must be entered in the format: '+xxxxxxxxxxx'. Up to 15 digits allowed."
     )
     
-    pn = models.CharField(validators=[phone_regex], max_length=17, blank=True)
+    pn = models.CharField(validators=[phone_regex], max_length=17)
     title = models.CharField(max_length=50)
-    created = models.DateTimeField()
-    modified = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now_add=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+       
 
 
     class Meta:
         unique_together = ('id', 'email')
-        abstract = True
 
-    
+
+    def has_perm(self, perm, obj=None):
+        # Handle permissions here; currently, person has no permissions.
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        # Handle module permissions here; currently, person has no permissions.
+        return self.is_superuser
+            
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.name} {self.surname}"
+    
+  
 
 
 
@@ -51,8 +84,9 @@ class Competence(models.Model):
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
     level = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    created = models.DateTimeField()
-    modified = models.DateTimeField()
+    subskills = models.CharField(max_length=300)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('id', 'name')
@@ -61,6 +95,7 @@ class Competence(models.Model):
         return self.name
 
 
+"""
 class Subskill(models.Model):
     name = models.CharField(max_length=50)
     competence = models.ForeignKey(Competence, on_delete=models.CASCADE, related_name='subskills')
@@ -70,7 +105,7 @@ class Subskill(models.Model):
 
     def __str__(self):
         return self.name
-    
+""" 
 
 class Company(models.Model):
 
@@ -87,8 +122,8 @@ class Company(models.Model):
     pn = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
     email = models.EmailField()
     activity_area = models.CharField(max_length=50)
-    created = models.DateTimeField()
-    modified = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('id', 'name')
@@ -102,8 +137,8 @@ class JobOffer(models.Model):
     company = models.ForeignKey(Company,on_delete=models.CASCADE, related_name='joboffers')
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=5000)
-    created = models.DateTimeField()
-    modified = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now_add=True)
 
 
     class Meta:

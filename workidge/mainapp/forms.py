@@ -1,10 +1,16 @@
 from django import forms 
-class ApplicationForm(forms.Form): 
-   pass
+from .models import Developer,Recruiter
 
-"""
-    name = forms.CharField(label='Name of Applicant', max_length=50) 
-    address = forms.CharField(label='Address', max_length=100) 
-    posts = (('Manager', 'Manager'),('Cashier', 'Cashier'),('Operator', 'Operator')) 
-    field = forms.ChoiceField(choices=posts)
-"""
+class DeveloperRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    class Meta:
+        model = Developer
+        fields = ['name', 'surname', 'email','pn','title','password']
+
+class RecruiterRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    class Meta:
+        model = Recruiter
+        fields = ['name', 'surname', 'email','pn','title','company','password']
+
+
