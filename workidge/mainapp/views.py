@@ -4,10 +4,14 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from .models import JobOffer
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def home(request):
-    return render(request,"home.html")
+    return render(request, "home.html")
 
 
 def register(request):
@@ -24,12 +28,16 @@ def developer_registration(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             # Optionally log in the user after registration
-            #login(request, user)
-            #return home(request)
+            # login(request, user)
+            # return redirect('home')  # Redirect to home after registration
             return redirect('home')
+        else:
+            # If form is invalid, re-render the registration form with errors
+            return render(request, 'register.html', {'developer_form': form, 'recruiter_form': RecruiterRegistrationForm()})
     else:
         form = DeveloperRegistrationForm()
-        return register(request)
+        return render(request, 'register.html', {'developer_form': form, 'recruiter_form': RecruiterRegistrationForm()})
+
 
 def recruiter_registration(request):
     if request.method == 'POST':
@@ -39,12 +47,15 @@ def recruiter_registration(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             # Optionally log in the user after registration
-            #login(request, user)
-            #return home(request)
+            # login(request, user)
+            # return redirect('home')  # Redirect to home after registration
             return redirect('home')
+        else:
+            # If form is invalid, re-render the registration form with errors
+            return render(request, 'register.html', {'developer_form': DeveloperRegistrationForm(), 'recruiter_form': form})
     else:
         form = RecruiterRegistrationForm()
-        return register(request)
+        return render(request, 'register.html', {'developer_form': DeveloperRegistrationForm(), 'recruiter_form': form})
 
 
 @login_required
@@ -53,7 +64,10 @@ def offers(request):
     return render(request, 'offers.html', {'job_offers': job_offers})  # Adjust this as per your application logic
 
 
+"""
 def login(request):
+    next_url = request.POST.get('next', '/')
+    print(f"Next URL: {next_url}")
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -62,13 +76,34 @@ def login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                return redirect('home')  # Redirect to the home page after login
+                return redirect(next_url)
     else:
-        form = AuthenticationForm()
+        form = AuthenticationForm()        
+    
+    return render(request, 'login.html', {'form': form})
+"""
+
+def login(request):
+    next_url = request.POST.get('next', request.GET.get('next', '/'))
+    print(f"Next URL: {next_url}")
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                if next_url and next_url != '/':
+                    return redirect(next_url)
+                else:
+                    return redirect('home')
+    else:
+        form = AuthenticationForm()        
     
     return render(request, 'login.html', {'form': form})
 
-
 def logout(request):
     auth_logout(request)
-    return redirect('home') 
+    return redirect('home')

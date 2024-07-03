@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainapp',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'mainapp.middleware.NoCacheMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'workidge.urls'
@@ -128,3 +130,8 @@ AUTH_USER_MODEL = 'mainapp.Person'
 
 
 LOGIN_URL = 'login'
+
+
+INTERNAL_IPS = [
+    '127.0.0.1',  # Example IP address, replace with yours
+]

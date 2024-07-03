@@ -8,16 +8,20 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Matching score</th>
                     <th>Company</th>
                     <th>Date Created</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for offer in job_offers %}
                     <tr>
                         <td>{{ offer.title }}</td>
+                        <td>50%</td>
                         <td>{{ offer.company.name }}</td>
                         <td>{{ offer.created }}</td>
+                        <td><button>Apply</button></td>
                     </tr>
                 {% endfor %}
             </tbody>
