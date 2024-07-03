@@ -141,3 +141,27 @@ footer {
 .form-table td {
     width: 30%; /* Adjust input field column width */
 }
+
+
+.skills-management select, .skills-management button, .skills-management ul {
+    margin-top: 20px;
+}
+.skills-management ul {
+    list-style-type: none;
+    padding: 0;
+}
+.skills-management li {
+    padding: 8px;
+    margin: 5px 0;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+}
+.skills-management li.selected {
+    background-color: #d1e7fd;
+}
+
+
+
+.move-up {
+    vertical-align: top;
+}

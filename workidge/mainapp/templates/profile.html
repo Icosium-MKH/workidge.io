@@ -10,7 +10,7 @@
             {% csrf_token %}
 
 
-            <div class="row align-items-center"></div>
+            <div class="row align-items-center">
                 <div class="col-4 put_left">
                     <!-- General Information 
                     ['name','surname','email','pn','title','skills']  
@@ -28,9 +28,75 @@
                     </table>
                 </div>
 
-                <div class="col-8 put_right">
-                    <!-- Skills -->
-                    <p>hi</p>
+                <div class="col-8 put_left">
+                    <div class = "skills-management">
+
+
+                        <h2>Manage List Items</h2>
+                        <select id="dropdown">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                        <button type="button" onclick="addItem()">Add</button>
+
+                        <ul id="itemList">
+                            <!-- Selected items will appear here -->
+                        </ul>
+
+                        <button type="button" onclick="deleteSelectedItems()">Delete Selected</button>
+
+                        <script>
+                            // Example items - replace with database retrieval in a real application
+                            const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+                        
+                            const dropdown = document.getElementById('dropdown');
+                            const itemList = document.getElementById('itemList');
+                            const notification = document.getElementById('notification');
+                        
+                            // Populate the dropdown menu
+                            items.forEach(item => {
+                                const option = document.createElement('option');
+                                option.value = item;
+                                option.textContent = item;
+                                dropdown.appendChild(option);
+                            });
+                        
+                            // Function to show notification
+                            function showNotification(message) {
+                                notification.textContent = message;
+                                notification.style.display = 'block';
+                                setTimeout(() => {
+                                    notification.style.display = 'none';
+                                }, 3000); // Hide after 3 seconds
+                            }
+                        
+                            // Function to add selected item to the list
+                            function addItem() {
+                                const selectedItem = dropdown.value;
+                        
+                                // Check for duplicates
+                                const existingItems = itemList.querySelectorAll('li');
+                                for (let item of existingItems) {
+                                    if (item.textContent === selectedItem) {
+                                        showNotification('This item is already in the list.');
+                                        return;
+                                    }
+                                }
+                        
+                                const li = document.createElement('li');
+                                li.textContent = selectedItem;
+                                li.onclick = () => li.classList.toggle('selected');
+                                itemList.appendChild(li);
+                            }
+                        
+                            // Function to delete selected items
+                            function deleteSelectedItems() {
+                                const selectedItems = itemList.querySelectorAll('li.selected');
+                                selectedItems.forEach(item => itemList.removeChild(item));
+                            }
+                        </script>
+                        
+                    </div>
+                                                                                                           
                 </div>
             </div>
 

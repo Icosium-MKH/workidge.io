@@ -74,19 +74,13 @@ class Competence(models.Model):
         ('hard_skill','hard_skill'),
     ]
 
-    LEVEL_CHOICES = [
-        ('notions','notions'),
-        ('beginner','beginner'),
-        ('intermediate','intermediate'),
-        ('advanced','advanced'),
-    ]
+   
 
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    level = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    subskills = models.ManyToManyField('self', symmetrical=True)
+    subskills = models.ManyToManyField('self', symmetrical=True,blank=True)
     created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('id', 'name')
