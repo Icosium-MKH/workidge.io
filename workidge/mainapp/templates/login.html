@@ -5,15 +5,20 @@
 <div class = "main_content_center">
 
     <h1>Login</h1>
-        
+    
+    <div class="form-container">
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-       
-        {{ form.as_p }}
+
+        <table class="form-table">
+        {{ form.as_table }}
+        </table>
+
         <input type="hidden" name="next" value="{{ request.GET.next }}">
         <button type="submit">Login</button>
     </form>
-    
+    </div>
+    <br>
     <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
 
 </div>

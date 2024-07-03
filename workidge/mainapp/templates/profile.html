@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{%block content%}
+
+<div class = "main_content">
+
+    
+    <div class="form-container">
+        <form id="developer-form" method="post" action="{% url 'developer_registration' %}">
+            {% csrf_token %}
+
+
+            <div class="row align-items-center"></div>
+                <div class="col-4 put_left">
+                    <!-- General Information 
+                    ['name','surname','email','pn','title','skills']  
+                    -->    
+                    <table class="form-table">
+                    {% for field in form %}
+                    {% if field.name != 'skills' %}
+                    <tr>
+                        <th>{{ field.label_tag }}</th>
+                        <td>{{ field }}</td>
+                        <td>{{ field.errors }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </table>
+                </div>
+
+                <div class="col-8 put_right">
+                    <!-- Skills -->
+                    <p>hi</p>
+                </div>
+            </div>
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+
+
+
+  
+    <div class="row align-items-center">
+
+        <div class="col-4">
+            <!-- General Information 
+            ['name','surname','email','pn','title','skills']  
+            -->
+
+            
+
+        </div>
+
+        <div class="col-8">
+            <!-- Skills -->
+        </div>
+
+    </div>
+
+
+    <div class="row align-items-center">
+
+    </div>
+
+
+        
+</div>
+
+
+{% endblock %}

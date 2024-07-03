@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import DeveloperRegistrationForm, RecruiterRegistrationForm
+from .forms import DeveloperRegistrationForm, RecruiterRegistrationForm, MyProfileForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from .models import JobOffer
 from django.contrib.auth.forms import AuthenticationForm
@@ -104,6 +104,26 @@ def login(request):
     
     return render(request, 'login.html', {'form': form})
 
+#Think about it ...
 def logout(request):
     auth_logout(request)
     return redirect('home')
+
+
+@login_required
+def profile(request):
+    # Assuming you have a way to identify the current logged-in user (developer)
+    developer = request.user.developer  # Assuming 'developer' is related to User model
+    
+    if request.method == 'POST':
+        form = MyProfileForm(request.POST, instance=developer)
+        if form.is_valid():
+            form.save()
+            return redirect('myprofile')  # Redirect to the profile page after saving
+    else:
+        form = MyProfileForm(instance=developer)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'profile.html', context)

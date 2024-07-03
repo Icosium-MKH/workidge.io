@@ -84,7 +84,7 @@ class Competence(models.Model):
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES)
     level = models.CharField(max_length=15, choices=TYPE_CHOICES)
-    subskills = models.CharField(max_length=300)
+    subskills = models.ManyToManyField('self', symmetrical=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now_add=True)
 
@@ -139,6 +139,7 @@ class JobOffer(models.Model):
     description = models.TextField(max_length=5000)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now_add=True)
+    required_skills = models.ManyToManyField(Competence, related_name='job_offers')
 
 
     class Meta:
@@ -150,6 +151,7 @@ class JobOffer(models.Model):
     
 
 class Developer(Person):
+    skills = models.ManyToManyField(Competence, related_name='developers')
     class Meta:
         db_table = 'developers'
 

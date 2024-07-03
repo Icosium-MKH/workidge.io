@@ -116,3 +116,28 @@ footer {
 .table td {
     border-color: white !important;
 }
+
+.form-container {
+    width: 100%; /* Adjust width of the container */
+    margin: 0 auto; /* Auto margins center the container */
+}
+
+.form-table {
+    width: 100%;
+    border-collapse: collapse; /* Optional: Collapses borders between cells */
+}
+
+.form-table th, .form-table td {
+    padding: 15px; /* Adjust padding as needed */
+    text-align: left; /* Align text to the left */
+    vertical-align: top; /* Align content to the top */
+}
+
+.form-table th {
+    width: 30%; /* Adjust label column width */
+    font-weight: normal; /* Optionally remove bold font */
+}
+
+.form-table td {
+    width: 30%; /* Adjust input field column width */
+}

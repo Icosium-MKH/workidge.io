@@ -34,17 +34,30 @@
     </form>
 
     <!-- Developer Registration Form -->
+    <div class="form-container">
     <form id="developer-form" method="post" action="{% url 'developer_registration' %}">
         {% csrf_token %}
-        {{ developer_form.as_p }}
+
+        <table class="form-table">
+        {{ developer_form.as_table }}
+        </table>
+
         <button type="submit">Register as Developer</button>
     </form>
+    </div>
+
 
     <!-- Recruiter Registration Form -->
+    <div class="form-container">
     <form id="recruiter-form" method="post" action="{% url 'recruiter_registration' %}">
         {% csrf_token %}
-        {{ recruiter_form.as_p }}
+
+        <table class="form-table">
+        {{ recruiter_form.as_table }}
+        </table>
+
         <button type="submit">Register as Recruiter</button>
     </form>
+    </div>
 </div>
 {% endblock %}
