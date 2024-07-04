@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import DeveloperRegistrationForm, RecruiterRegistrationForm, MyProfileForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from .models import JobOffer,Competence,Developer
-from .serializers import CompetenceSerializer
+from .serializers import CompetenceSerializer,DeveloperSerializer
 from rest_framework import generics
 from rest_framework.response import Response
 from django.contrib.auth.forms import AuthenticationForm
@@ -130,3 +130,34 @@ def get_all_competence(request):
     competences = Competence.objects.all()
     serializer = CompetenceSerializer(competences, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def developer_update(request):
+    try:
+        # Log the request data for debugging
+        print(request.data)
+
+        # Deserialize the JSON data from the request
+        serializer = DeveloperSerializer(data=request.data)
+        if serializer.is_valid():
+            # Find the developer instance by the 'id' field (you need to pass the 'id' in the request data)
+            developer = Developer.objects.get(id=request.data['id'])
+            id=request.POST['id'] 
+
+            # Update the developer instance with the new data
+            for field, value in request.data.items():
+                setattr(developer, field, value)
+            
+            # Save the updated instance
+            developer.save()
+            
+            return Response({'status': 'success', 'data': serializer.data})
+        else:
+            # Log the serializer errors
+            print(serializer.errors)
+            return Response({'status': 'error', 'errors': serializer.errors}, status=400)
+    except Developer.DoesNotExist:
+        return Response({'status': 'error', 'message': 'Developer not found'}, status=404)
+    except Exception as e:
+        return Response({'status': 'error', 'message': str(e)}, status=500)
