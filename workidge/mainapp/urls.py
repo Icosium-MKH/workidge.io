@@ -10,4 +10,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('offers/',views.offers, name="offers"),
     path('profile/',views.profile, name="profile"),
+    path('competences/developer/<int:developer_id>/', views.get_competence_by_dev, name='get_competence_by_dev'),
+    path('competences/', views.get_all_competence, name='get_all_competence'),
 ]

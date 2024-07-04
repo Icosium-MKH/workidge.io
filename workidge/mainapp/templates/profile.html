@@ -10,21 +10,28 @@
             {% csrf_token %}
 
 
-            <div class="row align-items-center">
-                <div class="col-4 put_left">
+            <div class="row">
+                <div class="col-4 put_left move-up">
                     <!-- General Information 
                     ['name','surname','email','pn','title','skills']  
                     -->    
                     <table class="form-table">
                     {% for field in form %}
-                    {% if field.name != 'skills' %}
-                    <tr>
-                        <th>{{ field.label_tag }}</th>
-                        <td>{{ field }}</td>
-                        <td>{{ field.errors }}</td>
-                    </tr>
-                    {% endif %}
+                        
+                            {% if field.name != 'skills' and field.name != 'id' %}
+                            <tr>
+                                <th>{{ field.label_tag }}</th>
+                                <td>{{ field }}</td>
+                                <td>{{ field.errors }}</td>
+                            </tr>
+                            {% endif %}
+
+                            {% if field.name == 'id' %} 
+                                <input type="hidden" id="developer_id" value="{{ field.value }}">
+                            {% endif %}
+                        
                     {% endfor %}
+                      
                     </table>
                 </div>
 
@@ -32,67 +39,98 @@
                     <div class = "skills-management">
 
 
-                        <h2>Manage List Items</h2>
+                        <h2>Skills</h2>
                         <select id="dropdown">
                             <!-- Options will be populated by JavaScript -->
                         </select>
                         <button type="button" onclick="addItem()">Add</button>
 
-                        <ul id="itemList">
+                        <ul id="itemList" class="skills-list">
                             <!-- Selected items will appear here -->
                         </ul>
 
                         <button type="button" onclick="deleteSelectedItems()">Delete Selected</button>
+                        <br><br><br><br>
+                        
 
                         <script>
-                            // Example items - replace with database retrieval in a real application
-                            const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-                        
-                            const dropdown = document.getElementById('dropdown');
-                            const itemList = document.getElementById('itemList');
-                            const notification = document.getElementById('notification');
-                        
-                            // Populate the dropdown menu
-                            items.forEach(item => {
-                                const option = document.createElement('option');
-                                option.value = item;
-                                option.textContent = item;
-                                dropdown.appendChild(option);
-                            });
-                        
-                            // Function to show notification
-                            function showNotification(message) {
-                                notification.textContent = message;
-                                notification.style.display = 'block';
-                                setTimeout(() => {
-                                    notification.style.display = 'none';
-                                }, 3000); // Hide after 3 seconds
-                            }
-                        
-                            // Function to add selected item to the list
-                            function addItem() {
-                                const selectedItem = dropdown.value;
-                        
-                                // Check for duplicates
-                                const existingItems = itemList.querySelectorAll('li');
-                                for (let item of existingItems) {
-                                    if (item.textContent === selectedItem) {
-                                        showNotification('This item is already in the list.');
-                                        return;
+                                document.addEventListener('DOMContentLoaded', function() {
+                               
+                                
+                                    const dropdown = document.getElementById('dropdown');
+                                    const itemList = document.getElementById('itemList');
+                                    const dev_id = (document.getElementById('developer_id')).value;
+                                    console.log(dev_id)
+                                    
+                                    function DevSkills() {
+                                        //const dev_id = document.getElementById('developer_id').value
+                                        const apiUrl = `{% url 'get_competence_by_dev' 0 %}`.replace('0', dev_id);
+                                        fetch(apiUrl)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                data.forEach(item => {
+
+
+                                                    const li = document.createElement('li');
+                                                    li.textContent = item.name;
+                                                    li.onclick = () => li.classList.toggle('selected');
+                                                    itemList.appendChild(li);
+
+                                                });
+                                            })
+                                            .catch(error => console.error('Error fetching items:', error));
                                     }
+                                    
+                                    function fetchItems() {
+                                        
+                                        const apiUrl = '{% url "get_all_competence" %}';
+                                        fetch(apiUrl)
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                data.forEach(item => {
+
+                                                    const option = document.createElement('option');
+                                                    option.value = item.name;
+                                                    option.textContent = item.name;
+                                                    dropdown.appendChild(option);
+                                                });
+                                            })
+                                            .catch(error => console.error('Error fetching items:', error));
+                                    }
+
+                                    // Call fetchItems on page load
+                                    window.addEventListener('load', function() {                                
+                                    DevSkills();
+                                    fetchItems();
+                                    });
+                            
+                            
+                                });
+                            
+                                // Function to add selected item to the list
+                                function addItem() {
+                                    const selectedItem = dropdown.value;
+                            
+                                    // Check for duplicates
+                                    const existingItems = itemList.querySelectorAll('li');
+                                    for (let item of existingItems) {
+                                        if (item.textContent === selectedItem) {
+                                            return;
+                                        }
+                                    }
+                            
+                                    const li = document.createElement('li');
+                                    li.textContent = selectedItem;
+                                    li.onclick = () => li.classList.toggle('selected');
+                                    itemList.appendChild(li);
                                 }
-                        
-                                const li = document.createElement('li');
-                                li.textContent = selectedItem;
-                                li.onclick = () => li.classList.toggle('selected');
-                                itemList.appendChild(li);
-                            }
-                        
-                            // Function to delete selected items
-                            function deleteSelectedItems() {
-                                const selectedItems = itemList.querySelectorAll('li.selected');
-                                selectedItems.forEach(item => itemList.removeChild(item));
-                            }
+                            
+                                // Function to delete selected items
+                                function deleteSelectedItems() {
+                                    const selectedItems = itemList.querySelectorAll('li.selected');
+                                    selectedItems.forEach(item => itemList.removeChild(item));
+                                }
+
                         </script>
                         
                     </div>
@@ -100,35 +138,10 @@
                 </div>
             </div>
 
-            <button type="submit">Save</button>
+            <button type="button">Save</button>
         </form>
     </div>
 
-
-
-
-  
-    <div class="row align-items-center">
-
-        <div class="col-4">
-            <!-- General Information 
-            ['name','surname','email','pn','title','skills']  
-            -->
-
-            
-
-        </div>
-
-        <div class="col-8">
-            <!-- Skills -->
-        </div>
-
-    </div>
-
-
-    <div class="row align-items-center">
-
-    </div>
 
 
         

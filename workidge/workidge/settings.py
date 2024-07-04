@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainapp',
     'debug_toolbar',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,13 @@ LOGIN_URL = 'login'
 INTERNAL_IPS = [
     '127.0.0.1',  # Example IP address, replace with yours
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+}

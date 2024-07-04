@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import DeveloperRegistrationForm, RecruiterRegistrationForm, MyProfileForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from .models import JobOffer
+from .models import JobOffer,Competence,Developer
+from .serializers import CompetenceSerializer
+from rest_framework import generics
+from rest_framework.response import Response
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-import logging
+from rest_framework.decorators import api_view
 
-logger = logging.getLogger(__name__)
+
 
 # Create your views here.
 def home(request):
@@ -64,25 +66,6 @@ def offers(request):
     return render(request, 'offers.html', {'job_offers': job_offers})  # Adjust this as per your application logic
 
 
-"""
-def login(request):
-    next_url = request.POST.get('next', '/')
-    print(f"Next URL: {next_url}")
-    if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                auth_login(request, user)
-                return redirect(next_url)
-    else:
-        form = AuthenticationForm()        
-    
-    return render(request, 'login.html', {'form': form})
-"""
-
 def login(request):
     next_url = request.POST.get('next', request.GET.get('next', '/'))
     print(f"Next URL: {next_url}")
@@ -127,3 +110,23 @@ def profile(request):
         'form': form,
     }
     return render(request, 'profile.html', context)
+
+
+
+@api_view(['GET'])
+def get_competence_by_dev(request, developer_id):
+    try:
+        developer = Developer.objects.get(id=developer_id)
+    except Developer.DoesNotExist:
+        return Response({'error': 'Developer not found'}, status=404)
+    
+    competences = developer.skills.all()  # Assuming 'skills' is the related name in Developer model
+    serializer = CompetenceSerializer(competences, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_all_competence(request):
+    competences = Competence.objects.all()
+    serializer = CompetenceSerializer(competences, many=True)
+    return Response(serializer.data)

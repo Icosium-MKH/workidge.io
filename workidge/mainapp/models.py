@@ -21,7 +21,6 @@ class CustomUserManager(BaseUserManager):
 
 class Person(AbstractBaseUser):
 #set ID and Email as primary keys
-    
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=20)
     surname = models.CharField(max_length=20)

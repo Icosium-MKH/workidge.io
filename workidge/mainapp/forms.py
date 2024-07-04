@@ -19,6 +19,9 @@ class JobOfferForm(forms.ModelForm):
         fields = '__all__'
 
 class MyProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id'] = forms.CharField(initial=self.instance.id, widget=forms.HiddenInput)
     class Meta:
         model = Developer
-        fields = ['name','surname','email','pn','title','skills'] 
+        fields = ['id','name','surname','email','pn','title','skills']
